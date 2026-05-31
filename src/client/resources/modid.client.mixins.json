@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.tom.sortmod.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "InventoryScreenMixin",
+    "ContainerScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

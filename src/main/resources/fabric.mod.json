@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "sortmod",
+	"version": "${version}",
+	"name": "Sort Mod",
+	"description": "Adds a sort button to the player inventory.",
+	"authors": [
+		"tom"
+	],
+	"license": "CC0-1.0",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.tom.sortmod.SortMod"
+		],
+		"client": [
+			"com.tom.sortmod.SortModClient"
+		]
+	},
+	"mixins": [
+    "sortmod.mixins.json",
+    {
+        "config": "modid.client.mixins.json",
+        "environment": "client"
+    }
+],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
