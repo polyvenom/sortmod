@@ -81,6 +81,10 @@ java tools/IconGen.java src/client/resources/assets/sortmod/textures/gui/icons.p
 
 Edit the ASCII templates in that file to tweak any icon, then rerun.
 
+## Acknowledgements
+
+The frozen-slots concept, the search-box-with-highlights idea, and the broader template of "sort & restock buttons inside the container GUI" were all pioneered by [EasierChests by Giselbaer (gbl)](https://github.com/gbl/EasierChests). EasierChests stopped being maintained at Minecraft 1.20.4. SortMod is an independent reimplementation for 26.1.2 with a different architecture (server-side inventory ops + client-side UI, instead of EasierChests' client-only slot-click simulation), but a lot of the polish ideas trace back to that mod and credit is due.
+
 ## License
 
 CC0 1.0 Universal — public domain.

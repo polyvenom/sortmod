@@ -43,6 +43,12 @@ java {
 	withSourcesJar()
 	sourceCompatibility = JavaVersion.VERSION_25
 	targetCompatibility = JavaVersion.VERSION_25
+
+	// Auto-resolve a Java 25 toolchain (downloaded on first build if absent).
+	// Lets the project build on any machine + CI without a hard-coded JDK path.
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
 }
 
 jar {
