@@ -2,7 +2,7 @@
 
 **The inventory toolkit ClientSort doesn't replace.**
 
-SortMod is a small, server-friendly Fabric mod that adds the inventory conveniences Minecraft *should* have shipped with: Terraria-style Quick Stack to nearby chests, persistent frozen slots, automatic hotbar restocking, and a cross-inventory search box. If you already love [ClientSort](https://modrinth.com/mod/client-sort) for its elegant in-place sorting — keep it. Run them side by side. SortMod is built to complement it, not compete with it.
+SortMod is a small, server-friendly Fabric mod that adds the inventory conveniences Minecraft *should* have shipped with: Terraria-style Quick Stack to nearby chests, persistent frozen slots, automatic hotbar restocking, and a cross-inventory search box. Designed to slot in alongside [ClientSort](https://modrinth.com/mod/client-sort) — run them together for a complete inventory setup.
 
 > **Tip:** SortMod plays nicely with ClientSort. If you want to skip our in-screen buttons and rely on ClientSort's UI, flip `"showContainerButtons": false` (and optionally `"showInventorySortButton": false`) in `config/sortmod/config.json` — every feature still works through slash commands and keybinds.
 
@@ -116,7 +116,7 @@ Every visible UI group can also be **repositioned**. Pick a corner (top-left / t
 
 - Minecraft 26.1.2 / Fabric Loader 0.19.2+
 - Fabric API required
-- Pairs cleanly with: **ClientSort**, **Mouse Tweaks**, **Inventory Sorter**, **Tweakeroo**
+- Designed to coexist with other inventory mods — use the per-element layout settings to position SortMod's widgets around them
 - Server-side ops are vanilla-safe — no NBT mangling, no item duplication paths
 
 ---
