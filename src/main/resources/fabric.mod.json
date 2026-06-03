@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "sortmod",
 	"version": "${version}",
-	"name": "Sort Mod",
-	"description": "Adds a sort button to the player inventory.",
+	"name": "SortMod",
+	"description": "Inventory utility companion: quick-stack to nearby chests, persistent frozen slots, hotbar auto-restock, cross-inventory search, and slash commands. Pairs cleanly with ClientSort.",
 	"authors": [
 		"tom"
 	],
@@ -15,6 +15,9 @@
 		],
 		"client": [
 			"com.tom.sortmod.SortModClient"
+		],
+		"modmenu": [
+			"com.tom.sortmod.modmenu.SortModMenuApi"
 		]
 	},
 	"mixins": [
@@ -29,5 +32,9 @@
 		"minecraft": "~26.1.2",
 		"java": ">=25",
 		"fabric-api": "*"
-	}
+	},
+	"recommends": {
+		"modmenu": "*"
+	},
+	"icon": "assets/modid/icon.png"
 }

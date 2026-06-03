@@ -1,6 +1,8 @@
 package com.tom.sortmod;
 
 import com.tom.sortmod.client.ClientFrozenSlots;
+import com.tom.sortmod.client.SortModConfig;
+import com.tom.sortmod.client.SortModKeybinds;
 import com.tom.sortmod.network.InventoryStatePacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -19,6 +21,15 @@ public class SortModClient implements ClientModInitializer {
     public void onInitializeClient() {
         // Packet types are registered server-side in SortMod.onInitialize();
         // the client-side registration happens automatically when we send.
+
+        // Touch the config so the default file is written on first launch
+        // and discoverable without having to open a chest first.
+        SortModConfig.showContainerButtons();
+
+        // Register vanilla-style keybinds. All default to UNBOUND so they don't
+        // collide with other mods — the user binds whichever they want via
+        // Options → Controls → Key Binds → SortMod.
+        SortModKeybinds.register();
 
         // Load frozen-slot state from disk
         ClientFrozenSlots.loadIfNeeded();

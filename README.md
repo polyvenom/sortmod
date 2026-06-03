@@ -1,69 +1,120 @@
 # SortMod
 
-A small Fabric mod for Minecraft 26.1.2 that keeps your inventory and chests tidy. Buttons in every container screen handle sorting, moving items in bulk, and restocking matching items. Containers also get a search box. Player slots can be locked so automated operations never touch them. Hotbar slots auto-refill from the main inventory when items run out.
+**Your Inventory Utility Companion for Minecraft 26.1.2 (Fabric).**
 
-## Features
+SortMod is the inventory toolkit that fills the gaps [ClientSort](https://modrinth.com/mod/client-sort) doesn't cover: **Quick-Stack to nearby chests**, **persistent frozen slots**, **hotbar auto-restock**, **cross-inventory search highlighting**, and a full set of **slash commands**. It's designed to run *alongside* ClientSort rather than replace it — pair them for a complete inventory experience.
 
-- **Sort** — player inventory and container, grouped by item ID with sensible tiebreakers (damage value, enchantment count, custom name, stack size).
-- **Dump / pull** — move *everything* between the player and the open container in one click.
-- **Restock** — only move items the other side already has, so you top up matches without dumping unrelated stuff.
-- **Quick stack** — push items from your inventory into nearby chests that already contain matching items, within a 5-block radius.
-- **Hotbar auto-restock** — when a hotbar slot empties, it's automatically refilled with the same item from your main inventory. Skipped while any screen is open, and skipped for frozen slots.
-- **Frozen slots** — middle-click any player-inventory slot to lock it. Locked slots are skipped by every sort/dump/restock/quickstack operation, including auto-restock. Lock state persists across sessions and worlds.
-- **Search** — in chest screens, type into the search box to highlight matching items on both sides.
+> Already running ClientSort? Set `"showContainerButtons": false` in `config/sortmod/config.json` to hide our in-screen buttons and lean on slash commands + keybinds instead.
+
+---
+
+## Headline features
+
+### Quick Stack to nearby chests
+One click pushes everything from your inventory into nearby chests that already contain matching items, within a 5-block radius — no container needs to be open. Terraria's best UX feature, brought to Minecraft.
+
+- Slash: `/quickstack`
+- Button: player inventory screen
+- Matches by item type, so each chest gets only the items it already contains
+
+### Persistent Frozen Slots
+Middle-click any player-inventory slot to lock it. Locked slots are skipped by every automated operation in the mod — sort, dump, restock, quick-stack, hotbar auto-restock. State persists to `config/sortmod/frozen-slots.json` and syncs to the server on every world join.
+
+Common uses:
+- Lock an empty totem slot so junk doesn't auto-restock in
+- Lock a row of building blocks so sorting doesn't reorganize them
+- Lock a spare bucket slot so quick-stack doesn't send it away
+
+### Hotbar Auto-Restock
+When a hotbar slot empties, SortMod refills it with the same item from your main inventory. Pauses while any screen is open. Skips frozen slots so locked empties stay locked.
+
+### Cross-inventory Search
+Type into the search box in any chest screen — matching items get a yellow tint on both sides simultaneously. Query persists between containers.
+
+### Slash commands for everything
+
+| Command | Action |
+|---|---|
+| `/quickstack` | Push matching items to nearby chests |
+| `/sortinv` | Sort player inventory |
+| `/sortcontainer` | Sort the open container |
+| `/dumpinv` | Player → container, everything |
+| `/removeinv` | Container → player, everything |
+| `/restockplayer` | Top up player from container |
+| `/restockcontainer` | Top up container from player |
+
+---
+
+## Also includes: basic sorting
+
+SortMod can sort containers and inventories by item registry ID (so oak items group with oak items rather than scattering alphabetically). It's intentionally minimal — if pure sorting is your priority, [ClientSort](https://modrinth.com/mod/client-sort) is the better-polished, more configurable option and we recommend running it alongside SortMod.
+
+Sort order: registry ID → damage value → enchantment count → custom-name flag → custom name → stack count desc. Respects frozen slots.
+
+---
+
+## Pair with ClientSort
+
+| Feature | ClientSort | SortMod |
+|---|---|---|
+| Sort containers | ✅ | ✅ (basic) |
+| Sort inventory | ✅ | ✅ (basic) |
+| Quick-Stack to nearby chests | ❌ | ✅ |
+| Persistent Frozen Slots | ❌ | ✅ |
+| Hotbar Auto-Restock | ❌ | ✅ |
+| Cross-inventory Search highlight | ❌ | ✅ |
+| Slash commands for everything | ❌ | ✅ |
+
+Recommended setup: both installed; in SortMod's config screen turn off `showContainerButtons` and `showInventorySortButton` (so ClientSort owns those), but keep `showQuickStackButton` on for SortMod's unique feature.
+
+---
 
 ## Install
 
-1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 26.1.2.
-2. Install [Fabric API](https://modrinth.com/mod/fabric-api).
-3. Drop the SortMod jar into your `mods` folder.
-4. Launch.
+1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 26.1.2
+2. Install [Fabric API](https://modrinth.com/mod/fabric-api)
+3. Drop the SortMod jar into your `mods` folder
+4. Launch
 
-For multiplayer: the mod must be installed on the **server** as well. The GUI buttons and search box are client-side niceties, but all the actual inventory manipulation (sort, restock, hotbar auto-fill) runs server-side.
+**Server play:** install on the server too. The buttons and search box are client-side, but every inventory operation runs server-side.
 
-## Usage
+---
 
-### Buttons
+## Configuration
 
-Open any chest, barrel, shulker, or other container. A row of 5 buttons appears above the container and 1 below the player inventory:
+`config/sortmod/config.json` (auto-created on first launch):
 
-| Button | Action |
-|---|---|
-| Sort | Sorts the container by item ID |
-| Dump up | Moves everything from your inventory into the container |
-| Pull down | Moves everything from the container into your inventory |
-| Restock player | Tops up items in your inventory that the container has matches for |
-| Restock container | Tops up items in the container that your inventory has matches for |
-| Sort (below) | Sorts your inventory |
+```json
+{
+  "showContainerButtons": true,
+  "showInventorySortButton": true,
+  "showQuickStackButton": true,
+  "showSearchBox": true
+}
+```
 
-The player inventory screen gets two buttons: **Sort inventory** and **Quick stack to nearby chests**.
+- **`showContainerButtons`** — render the 5 sort/dump/restock buttons above containers. Disable when pairing with ClientSort.
+- **`showInventorySortButton`** — render the single sort button on the player inventory screen.
+- **`showQuickStackButton`** — render the Quick Stack button (SortMod's signature feature, recommended on).
+- **`showSearchBox`** — render the chest-screen search box. Disable if you use NEI / REI / JEI.
 
-### Commands
+Slash commands, keybinds, and middle-click frozen-slot toggling work regardless of any of these settings.
 
-Every button has an equivalent slash command, if you'd rather bind a key or use one outside a container:
+### Per-element layout
 
-- `/sortinv` — sort player inventory
-- `/sortcontainer` — sort the open container
-- `/dumpinv` — dump player inventory into the open container
-- `/removeinv` — pull open container into the player inventory
-- `/restockplayer` — restock player from container
-- `/restockcontainer` — restock container from player
-- `/quickstack` — push matching items to nearby chests (no open container required)
+Each visible UI group can be anchored to a different corner of the container window with a pixel offset, so SortMod's widgets stay out of the way of other inventory mods (ClientSort, NEI, Trashslot, etc.). Open **ModMenu → SortMod → Config → Layout…** for the in-game editor, or edit `config/sortmod/config.json` directly:
 
-### Frozen slots
+```json
+"containerButtonsLayout":       { "anchor": "TOP_LEFT",    "offsetX": 0,   "offsetY": -22 },
+"chestPlayerSortLayout":        { "anchor": "BOTTOM_LEFT", "offsetX": 0,   "offsetY": 4   },
+"searchBoxLayout":              { "anchor": "TOP_LEFT",    "offsetX": 110, "offsetY": -22 },
+"inventoryScreenButtonsLayout": { "anchor": "TOP_LEFT",    "offsetX": 0,   "offsetY": -22 },
+"searchBoxWidth": 66
+```
 
-Middle-click any slot in your hotbar or main inventory to toggle it as frozen. A blue tint marks frozen slots. Frozen slots are ignored by every automated operation in the mod — they keep whatever you put there until you change it yourself.
+Anchors: `TOP_LEFT` / `TOP_RIGHT` / `BOTTOM_LEFT` / `BOTTOM_RIGHT`. Offsets are pixels — positive X is right, positive Y is down — measured outward from the chosen corner. To put a button row above the gui top edge, use a TOP anchor with a negative Y; to put one below the bottom edge, use a BOTTOM anchor with a positive Y. The Reset Defaults button in the layout screen restores the original positions.
 
-Common uses:
-- Lock a totem-of-undying slot so it stays empty between deaths (no auto-restock pulls in junk)
-- Lock a row of building blocks so `/sortinv` doesn't reorganize it
-- Lock a "spare bucket" slot so a quick-stack doesn't send it to a chest
-
-State is saved to `config/sortmod/frozen-slots.json` and sent to the server on every world join.
-
-### Search
-
-In any chest screen, type into the search box (top right, next to the buttons). Matching items get a yellow tint on both the container side and your inventory side. Clear the box to remove highlights. Click outside the box to defocus and use hotbar number keys normally.
+---
 
 ## Building
 
@@ -81,10 +132,33 @@ java tools/IconGen.java src/client/resources/assets/sortmod/textures/gui/icons.p
 
 Edit the ASCII templates in that file to tweak any icon, then rerun.
 
+---
+
+## Architecture
+
+Split source sets via Fabric loom `splitEnvironmentSourceSets()`:
+
+- `src/main/java` — server-side: inventory ops, command registration, packet handlers
+- `src/client/java` — client-side: UI, mixins, config, frozen-slot store
+- `src/main/resources` — `fabric.mod.json`, server mixin config, mod icon
+- `src/client/resources` — client mixin config, GUI icon atlas
+
+All inventory manipulation runs server-side for correctness and to avoid client-prediction desync.
+
+---
+
 ## Acknowledgements
 
-The frozen-slots concept, the search-box-with-highlights idea, and the broader template of "sort & restock buttons inside the container GUI" were all pioneered by [EasierChests by Giselbaer (gbl)](https://github.com/gbl/EasierChests). EasierChests stopped being maintained at Minecraft 1.20.4. SortMod is an independent reimplementation for 26.1.2 with a different architecture (server-side inventory ops + client-side UI, instead of EasierChests' client-only slot-click simulation), but a lot of the polish ideas trace back to that mod and credit is due.
+The frozen-slots concept, cross-inventory search highlighting, and the broader idea of in-container button widgets were pioneered by [EasierChests by Giselbaer (gbl)](https://github.com/gbl/EasierChests), which stopped being maintained at Minecraft 1.20.4. SortMod is an independent reimplementation for 26.1.2 with a different architecture (server-side inventory ops + client-side UI, instead of EasierChests' client-only slot-click simulation), but the polish ideas trace back there and credit is due.
+
+[ClientSort](https://modrinth.com/mod/client-sort) is the recommended sorting companion. SortMod's basic sort exists as a fallback; ClientSort does it better.
+
+---
 
 ## License
 
-CC0 1.0 Universal — public domain.
+CC0 1.0 Universal — public domain. Do whatever you want with the code.
+
+## Author
+
+polyvenom — <https://github.com/polyvenom>

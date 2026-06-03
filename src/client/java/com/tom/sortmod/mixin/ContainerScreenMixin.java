@@ -2,6 +2,8 @@ package com.tom.sortmod.mixin;
 
 import com.tom.sortmod.client.ClientFrozenSlots;
 import com.tom.sortmod.client.IconButton;
+import com.tom.sortmod.client.Layout;
+import com.tom.sortmod.client.SortModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -45,34 +47,47 @@ public abstract class ContainerScreenMixin extends Screen {
     private void addButtons(CallbackInfo ci) {
         if (menu instanceof CraftingMenu || menu instanceof InventoryMenu) return;
 
+        boolean containerBtns = SortModConfig.showContainerButtons();
+        boolean invSortBtn    = SortModConfig.showInventorySortButton();
+        boolean searchOn      = SortModConfig.showSearchBox();
+        if (!containerBtns && !invSortBtn && !searchOn) return;
+
         int bs = 20;                                   // vanilla square-button size
         int gap = 2;
-        int bx = this.leftPos;
-        int topY = this.topPos - bs - 2;
-        int bottomY = this.topPos + this.imageHeight + 4;
 
-        // Top row: container-side actions
-        this.addRenderableWidget(new IconButton(bx,                  topY, bs, IconButton.ICON_SORT,
-                Component.literal("Sort container"),         () -> sendCmd("sortcontainer")));
-        this.addRenderableWidget(new IconButton(bx + (bs + gap),     topY, bs, IconButton.ICON_DUMP_TO,
-                Component.literal("Dump inventory into container"), () -> sendCmd("dumpinv")));
-        this.addRenderableWidget(new IconButton(bx + (bs + gap) * 2, topY, bs, IconButton.ICON_PULL_FROM,
-                Component.literal("Pull container into inventory"), () -> sendCmd("removeinv")));
-        this.addRenderableWidget(new IconButton(bx + (bs + gap) * 3, topY, bs, IconButton.ICON_RESTOCK_PLAYER,
-                Component.literal("Restock player from container"), () -> sendCmd("restockplayer")));
-        this.addRenderableWidget(new IconButton(bx + (bs + gap) * 4, topY, bs, IconButton.ICON_RESTOCK_CONT,
-                Component.literal("Restock container from player"), () -> sendCmd("restockcontainer")));
+        if (containerBtns) {
+            // 5-button row, treated as a single anchored group.
+            int groupW = 5 * (bs + gap) - gap;         // 108px
+            Layout rowL = SortModConfig.containerButtonsLayout();
+            int rowX = rowL.x(this.leftPos, groupW);
+            int rowY = rowL.y(this.topPos, this.imageHeight, bs);
 
-        // Bottom row: sort player inventory (positioned below the player slots)
-        this.addRenderableWidget(new IconButton(bx, bottomY, bs, IconButton.ICON_SORT,
-                Component.literal("Sort player inventory"),  () -> sendCmd("sortinv")));
+            this.addRenderableWidget(new IconButton(rowX,                      rowY, bs, IconButton.ICON_SORT,
+                    Component.literal("Sort container"),                () -> sendCmd("sortcontainer")));
+            this.addRenderableWidget(new IconButton(rowX + (bs + gap),         rowY, bs, IconButton.ICON_DUMP_TO,
+                    Component.literal("Dump inventory into container"), () -> sendCmd("dumpinv")));
+            this.addRenderableWidget(new IconButton(rowX + (bs + gap) * 2,     rowY, bs, IconButton.ICON_PULL_FROM,
+                    Component.literal("Pull container into inventory"), () -> sendCmd("removeinv")));
+            this.addRenderableWidget(new IconButton(rowX + (bs + gap) * 3,     rowY, bs, IconButton.ICON_RESTOCK_PLAYER,
+                    Component.literal("Restock player from container"), () -> sendCmd("restockplayer")));
+            this.addRenderableWidget(new IconButton(rowX + (bs + gap) * 4,     rowY, bs, IconButton.ICON_RESTOCK_CONT,
+                    Component.literal("Restock container from player"), () -> sendCmd("restockcontainer")));
+        }
 
-        // Search box to the right of the top button row. Fills the remaining
-        // horizontal space inside the container window's width (~176px).
-        int searchX = bx + (bs + gap) * 5;
-        int searchW = (this.leftPos + 176) - searchX;
-        if (searchW >= 24) {
-            sortmod$searchBox = new EditBox(this.font, searchX, topY, searchW, bs,
+        if (invSortBtn) {
+            Layout sortL = SortModConfig.chestPlayerSortLayout();
+            int sortX = sortL.x(this.leftPos, bs);
+            int sortY = sortL.y(this.topPos, this.imageHeight, bs);
+            this.addRenderableWidget(new IconButton(sortX, sortY, bs, IconButton.ICON_SORT,
+                    Component.literal("Sort player inventory"),  () -> sendCmd("sortinv")));
+        }
+
+        if (searchOn) {
+            Layout searchL = SortModConfig.searchBoxLayout();
+            int searchW = SortModConfig.searchBoxWidth();
+            int searchX = searchL.x(this.leftPos, searchW);
+            int searchY = searchL.y(this.topPos, this.imageHeight, bs);
+            sortmod$searchBox = new EditBox(this.font, searchX, searchY, searchW, bs,
                     Component.literal("Search"));
             sortmod$searchBox.setBordered(true);
             sortmod$searchBox.setMaxLength(32);

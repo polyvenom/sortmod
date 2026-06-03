@@ -7,6 +7,12 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+	// Terraformers maven hosts ModMenu — compile-only dependency for the
+	// optional ModMenu integration entry point.
+	maven {
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 
 loom {
@@ -24,6 +30,12 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Soft optional dep — present at compile-time only so SortModMenuApi resolves;
+	// absent at runtime unless the user installs ModMenu. The published ModMenu
+	// artifact ships in the named (Yarn) namespace, so the client source set's
+	// plain compileOnly config works without remapping.
+	clientCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {
